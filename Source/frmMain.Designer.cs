@@ -53,6 +53,8 @@ namespace VisualThemeEditor2012
             this.lblBG = new System.Windows.Forms.Label();
             this.lblRecord = new System.Windows.Forms.Label();
             this.lnkReset = new System.Windows.Forms.LinkLabel();
+            this.lnkBackup = new System.Windows.Forms.LinkLabel();
+            this.backupDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.colorRecordBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.themeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingSource)).BeginInit();
@@ -65,14 +67,14 @@ namespace VisualThemeEditor2012
             this.lstRecords.FormattingEnabled = true;
             this.lstRecords.Location = new System.Drawing.Point(12, 113);
             this.lstRecords.Name = "lstRecords";
-            this.lstRecords.Size = new System.Drawing.Size(200, 316);
+            this.lstRecords.Size = new System.Drawing.Size(229, 316);
             this.lstRecords.TabIndex = 0;
             this.lstRecords.SelectedValueChanged += new System.EventHandler(this.lstRecords_SelectedValueChanged);
             this.lstRecords.Validating += new System.ComponentModel.CancelEventHandler(this.ValidatingColor);
             // 
             // colorRecordBindingSource
             // 
-            this.colorRecordBindingSource.DataSource = typeof(ColorRecord);
+            this.colorRecordBindingSource.DataSource = typeof(VisualThemeEditor2012.Domain.ColorRecord);
             this.colorRecordBindingSource.CurrentChanged += new System.EventHandler(this.colorRecordBindingSource_CurrentChanged);
             // 
             // cboTheme
@@ -90,7 +92,7 @@ namespace VisualThemeEditor2012
             // 
             // themeBindingSource
             // 
-            this.themeBindingSource.DataSource = typeof(Theme);
+            this.themeBindingSource.DataSource = typeof(VisualThemeEditor2012.Domain.Theme);
             this.themeBindingSource.PositionChanged += new System.EventHandler(this.themeBindingSource_PositionChanged);
             // 
             // label1
@@ -117,7 +119,7 @@ namespace VisualThemeEditor2012
             // 
             // categoryBindingSource
             // 
-            this.categoryBindingSource.DataSource = typeof(Category);
+            this.categoryBindingSource.DataSource = typeof(VisualThemeEditor2012.Domain.Category);
             this.categoryBindingSource.PositionChanged += new System.EventHandler(this.categoryBindingSource_PositionChanged);
             // 
             // label2
@@ -141,7 +143,7 @@ namespace VisualThemeEditor2012
             // labelColor
             // 
             this.labelColor.AutoSize = true;
-            this.labelColor.Location = new System.Drawing.Point(230, 144);
+            this.labelColor.Location = new System.Drawing.Point(247, 144);
             this.labelColor.Name = "labelColor";
             this.labelColor.Size = new System.Drawing.Size(64, 13);
             this.labelColor.TabIndex = 4;
@@ -150,7 +152,7 @@ namespace VisualThemeEditor2012
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(380, 144);
+            this.label4.Location = new System.Drawing.Point(397, 144);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 4;
@@ -159,7 +161,7 @@ namespace VisualThemeEditor2012
             // cmdSaveColor
             // 
             this.cmdSaveColor.Enabled = false;
-            this.cmdSaveColor.Location = new System.Drawing.Point(286, 229);
+            this.cmdSaveColor.Location = new System.Drawing.Point(303, 229);
             this.cmdSaveColor.Name = "cmdSaveColor";
             this.cmdSaveColor.Size = new System.Drawing.Size(192, 40);
             this.cmdSaveColor.TabIndex = 11;
@@ -169,7 +171,7 @@ namespace VisualThemeEditor2012
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(230, 288);
+            this.label5.Location = new System.Drawing.Point(247, 288);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(297, 46);
             this.label5.TabIndex = 12;
@@ -187,7 +189,7 @@ namespace VisualThemeEditor2012
             // colorFG
             // 
             this.colorFG.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.colorFG.Location = new System.Drawing.Point(233, 160);
+            this.colorFG.Location = new System.Drawing.Point(250, 160);
             this.colorFG.Name = "colorFG";
             this.colorFG.Size = new System.Drawing.Size(119, 34);
             this.colorFG.TabIndex = 13;
@@ -198,7 +200,7 @@ namespace VisualThemeEditor2012
             // colorBG
             // 
             this.colorBG.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.colorBG.Location = new System.Drawing.Point(383, 160);
+            this.colorBG.Location = new System.Drawing.Point(400, 160);
             this.colorBG.Name = "colorBG";
             this.colorBG.Size = new System.Drawing.Size(119, 34);
             this.colorBG.TabIndex = 13;
@@ -209,7 +211,7 @@ namespace VisualThemeEditor2012
             // lblFG
             // 
             this.lblFG.AutoSize = true;
-            this.lblFG.Location = new System.Drawing.Point(233, 201);
+            this.lblFG.Location = new System.Drawing.Point(250, 201);
             this.lblFG.Name = "lblFG";
             this.lblFG.Size = new System.Drawing.Size(42, 13);
             this.lblFG.TabIndex = 14;
@@ -218,7 +220,7 @@ namespace VisualThemeEditor2012
             // lblBG
             // 
             this.lblBG.AutoSize = true;
-            this.lblBG.Location = new System.Drawing.Point(380, 201);
+            this.lblBG.Location = new System.Drawing.Point(397, 201);
             this.lblBG.Name = "lblBG";
             this.lblBG.Size = new System.Drawing.Size(42, 13);
             this.lblBG.TabIndex = 14;
@@ -227,28 +229,44 @@ namespace VisualThemeEditor2012
             // lblRecord
             // 
             this.lblRecord.AutoSize = true;
-            this.lblRecord.Location = new System.Drawing.Point(230, 113);
+            this.lblRecord.Location = new System.Drawing.Point(247, 113);
             this.lblRecord.Name = "lblRecord";
-            this.lblRecord.Size = new System.Drawing.Size(42, 13);
+            this.lblRecord.Size = new System.Drawing.Size(59, 13);
             this.lblRecord.TabIndex = 14;
-            this.lblRecord.Text = "R, G, B";
+            this.lblRecord.Text = "ColorName";
             // 
             // lnkReset
             // 
             this.lnkReset.AutoSize = true;
-            this.lnkReset.Location = new System.Drawing.Point(219, 13);
+            this.lnkReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkReset.LinkColor = System.Drawing.Color.Sienna;
+            this.lnkReset.Location = new System.Drawing.Point(387, 14);
             this.lnkReset.Name = "lnkReset";
-            this.lnkReset.Size = new System.Drawing.Size(71, 13);
+            this.lnkReset.Size = new System.Drawing.Size(167, 16);
             this.lnkReset.TabIndex = 15;
             this.lnkReset.TabStop = true;
-            this.lnkReset.Text = "Reset Theme";
-            this.lnkReset.Click += new System.EventHandler(this.lnkReset_Click);
+            this.lnkReset.Text = "Reset To Stock Theme";
+            this.lnkReset.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkReset_LinkClicked);
+            // 
+            // lnkBackup
+            // 
+            this.lnkBackup.AutoSize = true;
+            this.lnkBackup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkBackup.LinkColor = System.Drawing.Color.Green;
+            this.lnkBackup.Location = new System.Drawing.Point(217, 14);
+            this.lnkBackup.Name = "lnkBackup";
+            this.lnkBackup.Size = new System.Drawing.Size(159, 16);
+            this.lnkBackup.TabIndex = 15;
+            this.lnkBackup.TabStop = true;
+            this.lnkBackup.Text = "Backup Theme to File";
+            this.lnkBackup.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkBackup_LinkClicked);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(546, 445);
+            this.ClientSize = new System.Drawing.Size(566, 445);
+            this.Controls.Add(this.lnkBackup);
             this.Controls.Add(this.lnkReset);
             this.Controls.Add(this.lblBG);
             this.Controls.Add(this.lblRecord);
@@ -304,6 +322,8 @@ namespace VisualThemeEditor2012
         private System.Windows.Forms.Label lblBG;
         private System.Windows.Forms.Label lblRecord;
         private System.Windows.Forms.LinkLabel lnkReset;
+        private System.Windows.Forms.LinkLabel lnkBackup;
+        private System.Windows.Forms.SaveFileDialog backupDialog;
     }
 }
 

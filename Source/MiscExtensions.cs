@@ -1,9 +1,10 @@
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
 namespace VisualThemeEditor2012
 {
-    public static class StreamExtensions
+    public static class MiscExtensions
     {
         public static T ReadStruct<T>( this Stream stream ) where T : struct
         {

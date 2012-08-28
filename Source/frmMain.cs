@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using VisualThemeEditor2012.Domain;
 
@@ -106,21 +108,6 @@ namespace VisualThemeEditor2012
             this.lblBG.Text = string.Format( "{0}, {1}, {2}", this.colorBG.BackColor.R, this.colorBG.BackColor.G, this.colorBG.BackColor.B );
         }
 
-        private void lnkReset_Click( object sender, System.EventArgs e )
-        {
-            var theme = this.themeBindingSource.Current as Theme;
-
-            Process.Start( "regedit.exe", "VS2012.Stock.Theme." + theme.Name + ".reg" )
-                .WaitForExit();
-
-            var newThemes = ThemeReader.ReadThemes();
-            this.themeBindingSource.DataSource = null;
-            this.categoryBindingSource.DataSource = null;
-            this.colorRecordBindingSource.DataSource = null;
-
-            this.themeBindingSource.DataSource = newThemes;
-        }
-
         private void ValidatingColor( object sender, System.ComponentModel.CancelEventArgs e )
         {
             //MessageBox.Show( "validating." );
@@ -145,6 +132,53 @@ namespace VisualThemeEditor2012
         private void cboCategory_SelectedValueChanged( object sender, System.EventArgs e )
         {
             ValidatingColor( null, null );
+        }
+
+        private void lnkBackup_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            var theme = this.themeBindingSource.Current as Theme;
+
+            this.backupDialog.CheckPathExists = true;
+            this.backupDialog.DefaultExt = ".reg";
+            this.backupDialog.FileName = "MyVS2012." + theme.Name + "Theme." + DateTime.Now.ToString( "yyyy-MM-dd." ) + (int)DateTime.Now.TimeOfDay.TotalSeconds +".reg";
+            this.backupDialog.Title = "Save Theme to ...";
+            this.backupDialog.InitialDirectory = Environment.CurrentDirectory;
+
+            if( this.backupDialog.ShowDialog() != DialogResult.OK )
+            {
+                return;
+            }
+
+            var backupFile = this.backupDialog.FileName;
+            var cmd = "reg.exe";
+            var args = "EXPORT \"" + Path.Combine( "HKEY_CURRENT_USER", ThemeReader.RegPath, theme.Guid.ToString( "B" ) ) + "\" \"" + backupFile + "\"";
+
+            var psi = new ProcessStartInfo( cmd, args ) {CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden};
+
+            Process.Start( psi )
+                .WaitForExit();
+
+            MessageBox.Show( "Backup complete." );
+        }
+
+        private void lnkReset_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            if( MessageBox.Show("This will reset your Visual Studio theme back to stock. Are you sure?", "Reset Theme", MessageBoxButtons.YesNo) != DialogResult.Yes )
+            {
+                return;
+            }
+
+            var theme = this.themeBindingSource.Current as Theme;
+            
+            Process.Start( "regedit.exe", "VS2012.Stock.Theme." + theme.Name + ".reg" )
+                .WaitForExit();
+
+            var newThemes = ThemeReader.ReadThemes();
+            this.themeBindingSource.DataSource = null;
+            this.categoryBindingSource.DataSource = null;
+            this.colorRecordBindingSource.DataSource = null;
+
+            this.themeBindingSource.DataSource = newThemes;
         }
     }
 }
