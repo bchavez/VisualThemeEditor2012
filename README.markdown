@@ -1,4 +1,4 @@
-Visual Studio 2012 Theme Editor
+Visual Studio 2012 Light / Dark Theme Editor
 ===============================
 -------------------------------
 
